@@ -10,12 +10,12 @@ def persq(n):
     j = int(math.sqrt(j))
     return j
 
-
+a=[]
 for i in range(1, 1000):
     for j in range(1, 1000):
         c = pow(i, 2) + pow(j, 2)
         c = (math.sqrt(c))
         if c == persq(c):
             if(i+j+c==1000):
-                print(i*j*c)
-
+                a.append(i*j*c)
+print(set(a))
