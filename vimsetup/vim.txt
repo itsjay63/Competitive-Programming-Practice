@@ -1,0 +1,172 @@
+
+- we can basically edit or create files in two modes either in command mode or gvim mode .
+- to run in command mode you must set system path variable for vim , than we can use it directly from cmd
+- command mode  - to run command 
+- insertion mode - insert or write mode 
+- :w  filename.txt - will create file of given name 
+- :w - save file 
+- :wq - save and quit vim
+- i - insert mode , insert before char 
+- I - insert beginning of line
+- a - append after char 
+- A - append after line
+- o - open a new line after current line 
+- O - open a new line before current line
+- esc - esc from mode 
+- :q - to quit vim 
+- :q! - to quit vim(ignoring unsaved changes)
+- H - left 
+- J - down 
+- K - up 
+- L - right
+- r - replace single char
+- R - replace following char 
+- w- skip word by word 
+- W - skip space by space (not worrying about symbols)
+- b- to move backwards
+- e - move to end of word
+- E - move to end of WORD(not worrying about symbols)
+- c- change whatever we specify(using modifier)
+- C-change until end of linex
+- x - delete single char at the cursor
+- X - backspace(single char before the cursor)
+- d - delete whatever we specify(using modifier) (also cuts )
+- D - delete until end of line (also cuts)
+- dd - to delete line by line
+- d14d - to delete next 14 line
+- :e - to open a file 
+- y - Yank what we specify
+- Y - Yank the current line
+- p - Paste after the cursor's position
+- P - Paste before the cursor's position
+- d - Delete what we specify (But also copy it - 'Cut')
+- D - Delete to the end of current line (But also copy it - 'Cut')
+- gg - Skip to the beginning of a document
+- dgg - to delete until the beginning of doc
+- G  - Skip to the end of a document
+- Go - add new line at the end of new doc
+- 17G - skip 17 lines
+- number + G - Skip to that line number
+- number + l - move right to 10 times(10l)
+- y17G - copy 17 lines
+- yy- to copy entire line .... 
+- yy10p - it will copy the line and paste it 10 times.
+- 5j - move down 5 lines 
+- 2k - move up 2 lines
+- d2w - to delete 2 words 
+- d500k - to delete 500 lines upward
+- / - Search forward , \ - esc sequence
+- ? - Search backward
+- n - Advance to next search result
+- N - Advance to previous search result
+- :nohlsearch - Remove search highlights
+- :beg,ends/query/replace/flags - Search and replace  ( 1,4/sjay/suthar/g)
+- where % is the entire document and g is a flag indicating the replacing of all instances throughout the document.
+- :split (CTRL-W + S) - Split the window horizontally
+- :vsplit (CTRL-W + V) - Split the window vertically
+- CTRL -W +C - close current window
+- :tabnew - Create a new tab
+- :tabclose - Close the current tab
+- :tabn - Navigate to the next tab
+- :tabp - Navigate to the previous tab
+- :qa - to quit all window
+- m + [letter] - Mark a line
+- ' + [letter] - Move cursor to a mark
+- % - Jump to matching bracket
+- less-than - Indent
+- greater-than - De-indent
+- = - Properly Indent (gg=-  - to get proper indentation in entire code)
+- ~ - Change case of character
+- ----------------------------------------------------------------------------------------------------------
+- :set nu - Line Numbers
+- :set rnu - Relative Line numbers
+- :set autoindent - Automatically indent
+- :set noerrorbells - Disable error bells
+- :set showmode - Show the working mode
+- :set colorcolumn=X - Draw a column at specified character
+- :set ruler - Show position info
+- :set nohlsearch - Disable search highlighting
+- :set bg=dark/light - Change foreground to match dark/light background
+- :set tabstop=X - Set tab to be X spaces
+- :colors [theme] - Set a theme , elflord
+- :e $MYVIMRC - to set changes
+- ----------------------------------------------------------------------------------------------------------
+- -----------------------------------------------vimrc---------------------------------------------------
+- ----------------------------------------------------------------------------------------------------------
+" Vim with all enhancements
+source $VIMRUNTIME/vimrc_example.vim
+
+" Use the internal diff if available.
+" Otherwise use the special 'diffexpr' for Windows.
+au GUIEnter * simalt ~x
+set hls
+set is
+set cb=unnamed
+set gfn=Fixedsys:h10
+set ts=4
+set sw=4
+set si
+set rnu
+set autoindent
+set noerrorbells
+set showmode
+set colorcolumn=140
+set ruler
+set tabstop=2
+colors elflord
+cd C:\Users\Jay\vimfiles
+
+inoremap { {}<Left>
+inoremap {<CR> {<CR>}<Esc>O
+inoremap {{ {
+inoremap {} {}
+
+autocmd filetype cpp nnoremap <F9> :w <bar> !g++ -std=c++14 % -o %:r -Wl,--stack,268435456<CR>
+autocmd filetype cpp nnoremap <F10> :!%:r<CR>
+autocmd filetype cpp nnoremap <C-C> :s/^\(\s*\)/\1\/\/<CR> :s/^\(\s*\)\/\/\/\//\1<CR> $
+
+set nu
+augroup numbertoggle
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave * set rnu
+    autocmd BufLeave,FocusLost,InsertEnter * set nornu
+augroup END
+
+
+if &diffopt !~# 'internal'
+  set diffexpr=MyDiff()
+endif
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg1 = substitute(arg1, '!', '\!', 'g')
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg2 = substitute(arg2, '!', '\!', 'g')
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let arg3 = substitute(arg3, '!', '\!', 'g')
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  let cmd = substitute(cmd, '!', '\!', 'g')
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+
+"modifications
